@@ -1,0 +1,32 @@
+<header class="hero-section">
+<div class="nav-buttons" role="navigation" aria-label="Primary">
+  <a href="{{ url_for('index') }}" class="nav-btn">Home</a>
+
+  {% if request.endpoint == "index" %}
+    <a href="#skills" class="nav-btn">Skills</a>
+    <a href="#projects" class="nav-btn">Projects</a>
+    <a href="#contact" class="nav-btn">Contact</a>
+  {% else %}
+    <a href="{{ url_for('index') }}#skills" class="nav-btn">Skills</a>
+    <a href="{{ url_for('index') }}#projects" class="nav-btn">Projects</a>
+    <a href="{{ url_for('index') }}#contact" class="nav-btn">Contact</a>
+  {% endif %}
+    <a href="{{ url_for('tutoring') }}" class="nav-btn">Tutoring</a>
+
+  <a href="{{ url_for('get_blog') }}" class="nav-btn">Blogs</a>
+</div>
+
+
+<nav class="nav-buttons" aria-label="Primary navigation">
+    <button id="toggle-theme" class="nav-btn" type="button">🌙 Dark mode</button>
+  </nav>
+
+  <h1 class="hero-name">Sakhiya Salad</h1>
+
+  <div class="marquee" aria-live="polite">
+    <h2>
+      <span id="typing-text"></span>
+      <span class="cursor" aria-hidden="true"></span>
+    </h2>
+  </div>
+</header>

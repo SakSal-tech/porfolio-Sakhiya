@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title if title else "Sakhiya's Portfolio" }}</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Lato:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!--  stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  {% include "partials/_header.html" %}
+
+  <main id="main">
+    {% block content %}{% endblock %}
+  </main>
+
+  {% include "partials/_footer.html" %}
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+
+    // -----------------------------
+    // Theme toggle: Light -> Dark -> High Contrast
+    // -----------------------------
+    const themeBtn = document.getElementById("toggle-theme");
+    const rootEl = document.documentElement;
+
+    function labelFor(theme){
+  if(theme === "light") return "🌙 Dark mode";
+  if(theme === "dark") return "◐ High contrast";
+  return "☀️ Light mode";
+}
+
+
+    function applyTheme(theme){
+      rootEl.dataset.theme = theme;
+      localStorage.setItem("theme", theme);
+      if(themeBtn){
+        themeBtn.textContent = labelFor(theme);
+        themeBtn.setAttribute("aria-pressed", theme !== "light" ? "true" : "false");
+        themeBtn.setAttribute("aria-label", "Change theme. Current: " + theme);
+      }
+    }
+
+    const savedTheme = localStorage.getItem("theme") || "light";
+    applyTheme(savedTheme);
+
+    if(themeBtn){
+      themeBtn.addEventListener("click", () => {
+        const current = rootEl.dataset.theme || "light";
+        const next = current === "light" ? "dark" : (current === "dark" ? "contrast" : "light");
+        applyTheme(next);
+      });
+    }
+
+    // -----------------------------
+    // Reduced motion support
+    // -----------------------------
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // -----------------------------
+    // Project card animations (only if motion allowed)
+    // -----------------------------
+    if(!reduceMotion){
+      const cards = document.querySelectorAll(".project-card, .blog-card");
+      const cardObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => entry.target.classList.toggle("visible", entry.isIntersecting));
+      }, { threshold: 0.25 });
+      cards.forEach(card => cardObserver.observe(card));
+    } else {
+      document.querySelectorAll(".project-card, .blog-card").forEach(el => el.classList.add("visible"));
+    }
+
+    // -----------------------------
+    // Section background highlight (keeps  house style)
+    // -----------------------------
+    const sections = document.querySelectorAll("section");
+    const sectionObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => entry.target.classList.toggle("active-section", entry.isIntersecting));
+    }, { threshold: 0.5 });
+    sections.forEach(section => sectionObserver.observe(section));
+
+    // -----------------------------
+    // Typewriter effect (runs only if hero has it)
+    // -----------------------------
+    const typingText = document.getElementById("typing-text");
+    if(typingText){
+      const snippets = [
+        { code: "$ whoami", output: "Sakhiya — full-stack software engineer" },
+        { code: ">>> approach_to_problems", output: "Break down complexity. Design for clarity." },
+        { code: "System.out.println(role);", output: "Scalable backend APIs and full-stack systems" },
+        { code: "Build()", output: "Reliable backend APIs and thoughtful UIs" },
+        { code: "SELECT skills FROM engineer;", output: "Java, Spring Boot, React, Python, SQL" }
+      ];
+
+      let index = 0, charIndex = 0, phase = "code";
+      const typingSpeed = 80;
+      const pauseTime = 1400;
+
+      function typeCurrentText() {
+        const current = snippets[index];
+        const text = (phase === "code") ? current.code : current.output;
+
+        typingText.textContent = text.slice(0, charIndex);
+        charIndex++;
+
+        if (charIndex <= text.length) {
+          setTimeout(typeCurrentText, reduceMotion ? 10 : typingSpeed);
+        } else {
+          setTimeout(() => {
+            charIndex = 0;
+            if (phase === "code") phase = "output";
+            else { phase = "code"; index = (index + 1) % snippets.length; }
+            typingText.textContent = "";
+            typeCurrentText();
+          }, reduceMotion ? 10 : pauseTime);
+        }
+      }
+      typeCurrentText();
+    }
+
+  });
+  </script>
+
+</body>
+</html>

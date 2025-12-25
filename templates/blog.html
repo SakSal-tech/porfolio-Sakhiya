@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% set title = "Blogs" %}
+
+{% block content %}
+
+<section class="projects-section">
+  <h2>Blogs</h2>
+
+  <div class="blog-grid">
+
+    {#
+      Loop through blogs provided by the server.
+      Each blog maps to a fixed card position.
+    #}
+    {% for blog in blogs %}
+
+      <article
+        class="blog-card
+               blog-theme-{{ blog.card_position }}
+               {% if blog.card_position is odd %}
+                 slide-from-left
+               {% else %}
+                 slide-from-right
+               {% endif %}"
+      >
+
+        {# Blog title #}
+        <h3>{{ blog.title }}</h3>
+
+        {# Metadata line under the title. This prevents:Empty paragraphs, Broken layout, Errors if a field is blank #}
+        {% if blog.meta %}
+          <p class="blog-meta">{{ blog.meta }}</p>
+        {% endif %}
+
+        {# Short summary shown on the card #}
+        {% if blog.summary %}
+          <p>{{ blog.summary }}</p>
+        {% endif %}
+
+        {# Expandable full article content #}
+        <details>
+          <summary>Read full article</summary>
+<p>
+  {{ blog.content
+     | replace('\n\n', '</p><p>')
+     | safe }}
+</p>
+        </details>
+
+      </article>
+
+    {% endfor %}
+
+    {#
+      Optional fallback message if no blogs are published.
+      This prevents an empty page during setup.
+    #}
+    {% if blogs|length == 0 %}
+      <p>No blog posts available at the moment.</p>
+    {% endif %}
+
+  </div>
+</section>
+
+{% endblock %}
