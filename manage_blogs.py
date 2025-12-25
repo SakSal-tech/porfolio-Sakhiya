@@ -3,8 +3,8 @@ from models import db, Blog
 
 def clear_blogs():
     """
-    Delete all existing blog rows.
-    Useful when resetting content during development.
+    To delete  all existing blog rows.
+    I need this  when resetting content during development.
     """
     Blog.query.delete()
     db.session.commit()
