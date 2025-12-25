@@ -28,7 +28,7 @@ class BookingForm(FlaskForm):
     name = StringField("Name", validators=[DataRequired(), Length(max=80)])
     level = SelectField(
         "Level",
-        choices=[("gcse", "GCSE (£25/hr)"), ("alevel", "A-Level (£30/hr)")],
+        choices=[("gcse", "GCSE"), ("alevel", "A-Level")],
         validators=[DataRequired()],
     )
     exam_board = StringField("Exam board", validators=[Length(max=60)])

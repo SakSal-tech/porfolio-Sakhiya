@@ -25,7 +25,11 @@ server.config["SECRET_KEY"] = os.environ.get(
 
 # Database configuration
 # Uses PostgreSQL connection string from environment variables
-server.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
+server.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
+    "DATABASE_URL",
+    "sqlite:///portfolio.db"
+)
+
 server.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # Initialise database with Flask app
