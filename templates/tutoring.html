@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+{% set title = "GCSE & A-Level Computer Science Tutoring" %}
+
+{% block content %}
+
+<section class="about-section" id="tutoring-about">
+  <div class="text">
+    <h2>Inspiring Education: Empowering the Next Generation of Technology Innovators</h2>
+
+    <p>
+      Hello, I’m Sakhiya — a qualified Computer Science teacher with BSc Computer Science degree, PostGraduate in Education(PGCE) and 15 years of successful teaching experience and currently
+      working as a Software Engineer. I offer tutoring so I can continue supporting young people in computer science, a subject I have always found both meaningful and enjoyable.
+    </p>
+       <p>Sessions are priced with accessibility in mind, recognising the financial pressures many families face. Tutoring places are limited due to full-time professional commitments. When availability is reached, a waiting list operates so families can plan ahead and be contacted when a space becomes available.
+      </p>
+    <p>
+      My tutoring is structured, exam-focused, and tailored to each student to build confidence, academic independence,
+      and outstanding results in GCSE and A-Level Computer Science.
+    </p>
+
+    <ul class="tutor-bullets">
+      <li><strong>GCSE:</strong> £25 per hour</li>
+      <li><strong>A-Level:</strong> £30 per hour</li>
+      <li><strong>Focus:</strong> exam technique, deep understanding, coding confidence</li>
+    </ul>
+  </div>
+
+  <div class="identity-card">
+    <h3>What you get</h3>
+    <p>Personalised plan • Regular exam practice • Supportive coaching</p>
+    <a href="#book" class="nav-btn d-inline-block mt-2">Book a session</a>
+  </div>
+</section>
+
+<section class="skills-section" id="how-it-works">
+  <h2>How my lessons work</h2>
+  <div class="text container">
+    <p>
+      I assess current level, identify gaps, and create a personalised learning plan with clear targets.
+      Lessons are adapted to learning style (visual, auditory, kinaesthetic), and complex concepts are broken down step by step.
+    </p>
+    <p>
+      For GCSE and A-Level students, teaching is aligned to the exam board specification with regular exam paper practice.
+      Coding practice is scaffolded so students learn to write, test, debug, and improve their code.
+    </p>
+  </div>
+</section>
+
+<section class="projects-section" id="tutoring-carousel">
+  <h2>GCSE & A-Level support</h2>
+
+  <div id="supportCarousel" class="carousel slide carousel-reverse" data-bs-ride="carousel" data-bs-interval="3500">
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#supportCarousel" data-bs-slide-to="0" class="active" aria-label="Slide 1"></button>
+      <button type="button" data-bs-target="#supportCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+      <button type="button" data-bs-target="#supportCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+      <button type="button" data-bs-target="#supportCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
+    </div>
+
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <div class="carousel-card">
+          <h3>GCSE Theory + Exam Technique</h3>
+          <p>Coverage aligned to specification, with exam paper practice and model answers.</p>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <div class="carousel-card">
+          <h3>Programming Confidence</h3>
+          <p>Structured tasks to build confidence: write, test, debug, refactor, and explain solutions.</p>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <div class="carousel-card">
+          <h3>A-Level Theory Mastery</h3>
+          <p>Deep understanding of core topics with application-focused exam practice.</p>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <div class="carousel-card">
+          <h3>A-Level Programming Project</h3>
+          <p>Support with planning, algorithm design, coding, testing, documentation and marking criteria.</p>
+        </div>
+      </div>
+    </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#supportCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#supportCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+</section>
+
+<section class="projects-section" id="gallery">
+  <h2>Lesson resources & examples</h2>
+  <p class="text-center">Add your images to the carousel by replacing the placeholders.</p>
+
+  <div id="imageCarousel" class="carousel slide carousel-reverse" data-bs-ride="carousel" data-bs-interval="3000">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="{{ url_for('static', filename='laptop.png') }}" class="d-block w-100 gallery-img" alt="Coding lesson placeholder">
+      </div>
+      <div class="carousel-item">
+        <img src="{{ url_for('static', filename='tutor-child.png') }}" class="d-block w-100 gallery-img" alt="GCSE theory placeholder">
+      </div>
+      <div class="carousel-item">
+        <img src="{{ url_for('static', filename='online-vs-home.png') }}" class="d-block w-100 gallery-img" alt="A level project placeholder">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact-section" id="book">
+  <div class="contact-grid">
+    <div class="contact-left">
+      <h2>Book a tutoring session</h2>
+      <p>
+        Tell me the exam level, topics you need support with, and your preferred method online/tutor home and days/times. I’ll reply with available slots.</p>
+
+
+      <div class="value-cards">
+        <div class="value-card">
+          <i class="fas fa-graduation-cap"></i>
+          <div>
+            <h4>Exam-focused</h4>
+            <p>Learn how to apply knowledge under exam conditions</p>
+          </div>
+        </div>
+
+        <div class="value-card">
+          <i class="fas fa-laptop-code"></i>
+          <div>
+            <h4>Hands-on coding</h4>
+            <p>Confidence with programming and problem-solving</p>
+          </div>
+        </div>
+
+        <div class="value-card">
+          <i class="fas fa-star"></i>
+          <div>
+            <h4>Outstanding grades</h4>
+            <p>Clear targets and measurable progress</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-right">
+      <h2>Booking request</h2>
+
+      <form method="POST" action="{{ url_for('tutoring') }}" novalidate>
+        {{ booking_form.hidden_tag() }}
+
+        <label for="student_name">Student / Parent name</label>
+        {{ booking_form.name(id="student_name") }}
+        {% for err in booking_form.name.errors %}<div class="form-error" role="alert">{{ err }}</div>{% endfor %}
+
+        <label for="level">Level</label>
+        {{ booking_form.level(id="level") }}
+        {% for err in booking_form.level.errors %}<div class="form-error" role="alert">{{ err }}</div>{% endfor %}
+
+        <label for="exam_board">Exam board</label>
+        {{ booking_form.exam_board(id="exam_board") }}
+
+        <label for="email2">Email</label>
+        {{ booking_form.email(id="email2") }}
+        {% for err in booking_form.email.errors %}<div class="form-error" role="alert">{{ err }}</div>{% endfor %}
+
+        <label for="preferred">Preferred days/times</label>
+        {{ booking_form.preferred_times(id="preferred") }}
+
+        <label for="topics">Topics / message</label>
+        {{ booking_form.message(id="topics") }}
+        {% for err in booking_form.message.errors %}<div class="form-error" role="alert">{{ err }}</div>{% endfor %}
+
+        <button type="submit">Send booking request</button>
+
+        {% if booking_success %}
+          <p class="form-success" role="status">{{ booking_success }}</p>
+        {% endif %}
+        {% if booking_error %}
+          <p class="form-error" role="alert">{{ booking_error }}</p>
+        {% endif %}
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="skills-section" id="experience">
+  <h2>School Leadership & Teaching Experience</h2>
+  <div class="container">
+    <ul class="experience-list">
+      <li><strong>Head of Department & Digital Learning</strong> — Rutlish School, Merton (Sep 2022 – Jul 2025)</li>
+      <li><strong>Teacher & Head of Department</strong> — Sydenham High School (GDST), Lewisham (Sep 2018 – Aug 2022)</li>
+      <li><strong>Secondary Teacher & 2nd in Charge / Course Coordinator</strong> — Trinity School, Belvedere (Sep 2016 – Aug 2018)</li>
+      <li><strong>ICT Teacher</strong> — Shooters Hill Post 16 Campus, Woolwich (Sep 2011 – Aug 2016)</li>
+    </ul>
+  </div>
+</section>
+
+{% endblock %}
