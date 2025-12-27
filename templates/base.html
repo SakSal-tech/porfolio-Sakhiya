@@ -1,9 +1,22 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
+
   <meta charset="UTF-8">
+    <title>{{ title if title else "Sakhiya's Portfolio" }}</title>
+
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ title if title else "Sakhiya's Portfolio" }}</title>
+  <meta name="google-site-verification" content="P24_hZA1wtKKoYz3CvZYWTLEWpyrDwON8VNY77i6q5k" />
+  <!-- Open Graph / LinkedIn preview -->
+<meta property="og:title" content="Sakhiya Salad – Full-Stack Software Engineer" />
+<meta property="og:description" content="Full-stack software engineer with experience in backend systems, APIs, databases, and modern web technologies. Explore projects, blogs, and real-world engineering work." />
+<meta property="og:url" content="https://www.sakhiya.dev" />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="https://www.sakhiya.dev/static/linkedin-preview-v2.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="627" />
+
+
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,6 +31,7 @@
 
   <!--  stylesheet -->
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
 </head>
 <body>
 

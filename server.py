@@ -4,10 +4,6 @@ from email.message import EmailMessage
 from datetime import datetime
 
 from flask import Flask, render_template
-from dotenv import load_dotenv
-
-# Load environment variables from .env file
-load_dotenv()
 
 # Forms
 from forms import ContactForm, BookingForm
@@ -15,7 +11,7 @@ from forms import ContactForm, BookingForm
 # Database models
 from models import db, Booking, Blog
 
-# Flask application setup
+# Flask application
 server = Flask(__name__)
 
 # Secret key for forms and sessions
@@ -24,23 +20,26 @@ server.config["SECRET_KEY"] = os.environ.get(
 )
 
 # Database configuration
-# Uses PostgreSQL connection string from environment variables
-server.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
-    "DATABASE_URL",
-    "sqlite:///portfolio.db"
+# Uses DATABASE_URL if explicitly set, otherwise falls back to SQLite
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+server.config["SQLALCHEMY_DATABASE_URI"] = (
+    os.environ.get("DATABASE_URL")
+    or f"sqlite:///{os.path.join(BASE_DIR, 'instance', 'portfolio.db')}"
+
 )
 
 server.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+print("USING DB:", server.config["SQLALCHEMY_DATABASE_URI"])
+
 
 # Initialise database with Flask app
 db.init_app(server)
 
 
-def send_email(subject: str, body: str, reply_to: str | None = None) -> None:
+def send_email(subject, body, reply_to=None):
     """
     Sends an email using SMTP settings from environment variables
     """
-
     smtp_host = os.environ.get("SMTP_HOST")
     smtp_port = int(os.environ.get("SMTP_PORT", "587"))
     smtp_user = os.environ.get("SMTP_USERNAME")
@@ -53,7 +52,6 @@ def send_email(subject: str, body: str, reply_to: str | None = None) -> None:
     msg["From"] = mail_from
     msg["To"] = mail_to
 
-    # Ensures replies go to the sender, not the system email
     if reply_to:
         msg["Reply-To"] = reply_to
 
@@ -69,7 +67,6 @@ def common_context():
     """
     Shared data available to all templates
     """
-
     skills = [
         ("Java", "java.webp"),
         ("SpringBoot", "spring.webp"),
@@ -89,7 +86,7 @@ def common_context():
 
     return {
         "year": datetime.now().year,
-        "skills": skills
+        "skills": skills,
     }
 
 
@@ -99,7 +96,6 @@ def index():
     Homepage route
     Handles contact form submission
     """
-
     ctx = common_context()
     form = ContactForm()
 
@@ -146,7 +142,6 @@ def tutoring():
     Tutoring booking page
     Saves bookings and sends notification emails
     """
-
     ctx = common_context()
     form = BookingForm()
 
@@ -205,7 +200,6 @@ def admin_bookings():
     """
     Simple admin view for tutoring bookings
     """
-
     bookings = Booking.get_all()
 
     return render_template(
@@ -221,7 +215,6 @@ def get_blog():
     Blog page
     Loads published blogs from the database
     """
-
     ctx = common_context()
     blogs = Blog.get_published()
 
@@ -237,7 +230,6 @@ if __name__ == "__main__":
     Application entry point
     Creates database tables if they do not exist
     """
-
     with server.app_context():
         db.create_all()
 
