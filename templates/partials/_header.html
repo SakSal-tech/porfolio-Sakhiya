@@ -1,6 +1,8 @@
 <header class="hero-section">
 <div class="nav-buttons" role="navigation" aria-label="Primary">
   <a href="{{ url_for('index') }}" class="nav-btn">Home</a>
+<!-- If already on the homepage, jump directly to #skills.
+     Otherwise, go to / first and then jump to #skills. -->
 
   {% if request.endpoint == "index" %}
     <a href="#skills" class="nav-btn">Skills</a>
@@ -22,7 +24,8 @@
   </nav>
 
   <h1 class="hero-name">Sakhiya Salad</h1>
-
+  <!-- Accessibility: The content inside here may change.
+Please announce updates, but do not interrupt the user. Wait until user pauses -->
   <div class="marquee" aria-live="polite">
     <h2>
       <span id="typing-text"></span>

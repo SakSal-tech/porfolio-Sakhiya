@@ -142,7 +142,7 @@
       </div>
     </div>
 
-    <div class="contact-right">
+    <div class="contact-right" id="contact-form">
       <h2>Contact</h2>
 
       <form method="POST" action="{{ url_for('index') }}" novalidate>
@@ -169,12 +169,12 @@
 
         <button type="submit">Send Message</button>
 
-        {% if contact_success %}
-          <p class="form-success" role="status">{{ contact_success }}</p>
-        {% endif %}
-        {% if contact_error %}
-          <p class="form-error" role="alert">{{ contact_error }}</p>
-        {% endif %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% for category, message in messages %}
+    <p class="form-{{ category }}" role="status">{{ message }}</p>
+  {% endfor %}
+{% endwith %}
+
       </form>
     </div>
   </div>

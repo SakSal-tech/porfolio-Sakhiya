@@ -40,6 +40,7 @@
   {% include "partials/_header.html" %}
 
   <main id="main">
+      <!-- This is where child templates inject their page-specific HTML -->
     {% block content %}{% endblock %}
   </main>
 
@@ -51,9 +52,7 @@
   <script>
   document.addEventListener("DOMContentLoaded", () => {
 
-    // -----------------------------
-    // Theme toggle: Light -> Dark -> High Contrast
-    // -----------------------------
+    // Theme toggle: Light - Dark - High Contrast. toggle-theme is from header.html in partial
     const themeBtn = document.getElementById("toggle-theme");
     const rootEl = document.documentElement;
 
@@ -85,36 +84,34 @@
       });
     }
 
-    // -----------------------------
-    // Reduced motion support
-    // -----------------------------
+    // accessibility Reduced motion support against dizziness, migraines etc.WCAG-compliant
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // -----------------------------
+
     // Project card animations (only if motion allowed)
-    // -----------------------------
     if(!reduceMotion){
+        //Find all elements with class project-card or blog-card
       const cards = document.querySelectorAll(".project-card, .blog-card");
+      // Tell me when this element becomes visible on screen
       const cardObserver = new IntersectionObserver(entries => {
+          //If this card is visible, add the class visible otherwise remove
         entries.forEach(entry => entry.target.classList.toggle("visible", entry.isIntersecting));
-      }, { threshold: 0.25 });
+      }, { threshold: 0.25 });// Trigger animation when 25% of the card is visible
       cards.forEach(card => cardObserver.observe(card));
     } else {
-      document.querySelectorAll(".project-card, .blog-card").forEach(el => el.classList.add("visible"));
+      document.querySelectorAll(".project-card, .blog-card").forEach(el => el.classList.add("visible"));//If motion is reduced, just show everything immediately
     }
 
-    // -----------------------------
-    // Section background highlight (keeps  house style)
-    // -----------------------------
+
+    // Section background highlight (keeps  house style) when it's mostly visible on screen
     const sections = document.querySelectorAll("section");
     const sectionObserver = new IntersectionObserver(entries => {
       entries.forEach(entry => entry.target.classList.toggle("active-section", entry.isIntersecting));
-    }, { threshold: 0.5 });
+    }, { threshold: 0.5 });//At least half of the section must be visible to prevent flickering or multiple sections being active at once
     sections.forEach(section => sectionObserver.observe(section));
 
-    // -----------------------------
+
     // Typewriter effect (runs only if hero has it)
-    // -----------------------------
     const typingText = document.getElementById("typing-text");
     if(typingText){
       const snippets = [
@@ -124,7 +121,7 @@
         { code: "Build()", output: "Reliable backend APIs and thoughtful UIs" },
         { code: "SELECT skills FROM engineer;", output: "Java, Spring Boot, React, Python, SQL" }
       ];
-
+        // phase text to type
       let index = 0, charIndex = 0, phase = "code";
       const typingSpeed = 80;
       const pauseTime = 1400;
@@ -135,16 +132,17 @@
 
         typingText.textContent = text.slice(0, charIndex);
         charIndex++;
-
+        // Trying to prevent to slice past the end of the string or running forever and never switching to next
         if (charIndex <= text.length) {
           setTimeout(typeCurrentText, reduceMotion ? 10 : typingSpeed);
         } else {
+            // recursion typeCurrentText() calling typeCurrentText again later
           setTimeout(() => {
             charIndex = 0;
             if (phase === "code") phase = "output";
-            else { phase = "code"; index = (index + 1) % snippets.length; }
-            typingText.textContent = "";
-            typeCurrentText();
+            else { phase = "code"; index = (index + 1) % snippets.length; }//creates a loop back to the start.
+            typingText.textContent = "";// clear screen
+            typeCurrentText();// restart typing again
           }, reduceMotion ? 10 : pauseTime);
         }
       }

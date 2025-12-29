@@ -1,13 +1,33 @@
 from server import server
 from models import db, Blog
+import math
+
+
+def estimate_read_time(text):
+    """
+    Estimate reading time based on average reading speed.
+
+    This is an approximation used widely in blogs.
+    It helps users decide whether they have time to read an article,
+    not to measure actual reading speed (which varies per person).
+    math.ceil round up e.g 3 min read” instead of “2.1 min read”
+    """
+    if not text:
+        return None
+
+    words = len(text.split())
+    minutes = math.ceil(words / 200)
+    return f"{minutes} min read"
+
 
 def clear_blogs():
     """
-    To delete  all existing blog rows.
-    I need this  when resetting content during development.
+    To delete all existing blog rows.
+    I need this when resetting content during development.
     """
     Blog.query.delete()
     db.session.commit()
+
 
 def upsert_blog(
     slug,
@@ -27,12 +47,18 @@ def upsert_blog(
 
     blog = Blog.query.filter_by(slug=slug).first()
 
+    # Reading time is calculated from the article content.
+    # This is done here so it is calculated once and stored,
+    # rather than recalculated on every page request.
+    read_time = estimate_read_time(content)
+
     if blog:
         blog.card_position = card_position
         blog.title = title
         blog.meta = meta
         blog.summary = summary
         blog.content = content
+        blog.read_time = read_time
         blog.published = published
     else:
         blog = Blog(
@@ -42,6 +68,7 @@ def upsert_blog(
             meta=meta,
             summary=summary,
             content=content,
+            read_time=read_time,
             published=published
         )
         db.session.add(blog)
@@ -55,7 +82,6 @@ def main():
     with server.app_context():
         clear_blogs()
 
-        # Article 1: Industry, LinkedIn, parents
         upsert_blog(
             slug="women-in-tech-why-it-matters",
             card_position=1,
@@ -71,7 +97,6 @@ From my own experience working with learners and professionals, women entering t
 This is not about replacing one group with another. It is about recognising that better technology comes from broader perspectives. When women are included at every level, from education to leadership, the quality and impact of technology improves for everyone."""
         )
 
-        # Article 2: Adult confidence, learning, transferable skills
         upsert_blog(
             slug="confidence-is-a-technical-skill",
             card_position=2,
@@ -105,10 +130,15 @@ For adults, professionals, and parents, the key skill is not learning how to pro
 There are also important considerations around data privacy and security. Sharing sensitive information with AI systems can expose data in unintended ways if safeguards are not understood.
 
 AI literacy is now a life skill. Used well, these tools can enhance productivity and creativity. Used carelessly, they can undermine trust, accuracy, and safety. The difference lies in education and awareness, not the technology itself. If you would like to read further about using AI safely and responsibly, the following resources are useful starting points:
-https://www.oecd.org/en/topics/sub-issues/ai-risks-and-incidents.html """
+
+<a href="https://www.oecd.org/en/topics/sub-issues/ai-risks-and-incidents.html"
+   target="_blank" rel="noopener">
+https://www.oecd.org/en/topics/sub-issues/ai-risks-and-incidents.html
+</a>
+"""
         )
 
-        # Article 4: Students and parents, exams and stress
+
         upsert_blog(
             slug="exam-technique-and-stress",
             card_position=4,

@@ -126,6 +126,7 @@ class Blog(db.Model):
     meta = db.Column(db.Text)
     summary = db.Column(db.Text)
     content = db.Column(db.Text, nullable=False)
+    read_time = db.Column(db.String)  # Added later
 
     published = db.Column(db.Boolean, default=True)
 

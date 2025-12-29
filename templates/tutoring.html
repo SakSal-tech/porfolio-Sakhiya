@@ -96,8 +96,8 @@
 </section>
 
 <section class="projects-section" id="gallery">
-  <h2>Lesson resources & examples</h2>
-  <p class="text-center">Add your images to the carousel by replacing the placeholders.</p>
+  <h2> Online or Face-to-Face </h2>
+  <p class="text-center"></p>
 
   <div id="imageCarousel" class="carousel slide carousel-reverse" data-bs-ride="carousel" data-bs-interval="3000">
     <div class="carousel-inner">
@@ -151,41 +151,51 @@
 
     <div class="contact-right">
       <h2>Booking request</h2>
+<form method="POST" action="{{ url_for('tutoring') }}" novalidate>
+  {{ booking_form.hidden_tag() }}
 
-      <form method="POST" action="{{ url_for('tutoring') }}" novalidate>
-        {{ booking_form.hidden_tag() }}
+  <label for="student_name">Student / Parent name</label>
+  {{ booking_form.name(id="student_name") }}
+  {% for err in booking_form.name.errors %}
+    <div class="form-error" role="alert">{{ err }}</div>
+  {% endfor %}
 
-        <label for="student_name">Student / Parent name</label>
-        {{ booking_form.name(id="student_name") }}
-        {% for err in booking_form.name.errors %}<div class="form-error" role="alert">{{ err }}</div>{% endfor %}
+  <label for="level">Level</label>
+  {{ booking_form.level(id="level") }}
+  {% for err in booking_form.level.errors %}
+    <div class="form-error" role="alert">{{ err }}</div>
+  {% endfor %}
 
-        <label for="level">Level</label>
-        {{ booking_form.level(id="level") }}
-        {% for err in booking_form.level.errors %}<div class="form-error" role="alert">{{ err }}</div>{% endfor %}
+  <label for="exam_board">Exam board</label>
+  {{ booking_form.exam_board(id="exam_board") }}
 
-        <label for="exam_board">Exam board</label>
-        {{ booking_form.exam_board(id="exam_board") }}
+  <label for="email2">Email</label>
+  {{ booking_form.email(id="email2") }}
+  {% for err in booking_form.email.errors %}
+    <div class="form-error" role="alert">{{ err }}</div>
+  {% endfor %}
 
-        <label for="email2">Email</label>
-        {{ booking_form.email(id="email2") }}
-        {% for err in booking_form.email.errors %}<div class="form-error" role="alert">{{ err }}</div>{% endfor %}
+  <label for="preferred">Preferred days/times</label>
+  {{ booking_form.preferred_times(id="preferred") }}
 
-        <label for="preferred">Preferred days/times</label>
-        {{ booking_form.preferred_times(id="preferred") }}
+  <label for="topics">Topics / message</label>
+  {{ booking_form.message(id="topics") }}
+  {% for err in booking_form.message.errors %}
+    <div class="form-error" role="alert">{{ err }}</div>
+  {% endfor %}
 
-        <label for="topics">Topics / message</label>
-        {{ booking_form.message(id="topics") }}
-        {% for err in booking_form.message.errors %}<div class="form-error" role="alert">{{ err }}</div>{% endfor %}
+  <div id="booking-form">
+    <button type="submit">Send booking request</button>
 
-        <button type="submit">Send booking request</button>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% for category, message in messages %}
+    <p class="form-{{ category }}" role="status">{{ message }}</p>
+  {% endfor %}
+{% endwith %}
 
-        {% if booking_success %}
-          <p class="form-success" role="status">{{ booking_success }}</p>
-        {% endif %}
-        {% if booking_error %}
-          <p class="form-error" role="alert">{{ booking_error }}</p>
-        {% endif %}
-      </form>
+  </div>
+</form>
+
     </div>
   </div>
 </section>

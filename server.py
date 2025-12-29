@@ -1,9 +1,15 @@
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env
+load_dotenv()
+
 import smtplib
 from email.message import EmailMessage
 from datetime import datetime
-
 from flask import Flask, render_template
+from flask import flash, redirect, url_for
+
 
 # Forms
 from forms import ContactForm, BookingForm
@@ -14,10 +20,13 @@ from models import db, Booking, Blog
 # Flask application
 server = Flask(__name__)
 
+
 # Secret key for forms and sessions
 server.config["SECRET_KEY"] = os.environ.get(
     "SECRET_KEY", "dev-secret-key-change-me"
 )
+
+
 
 # Database configuration
 # Uses DATABASE_URL if explicitly set, otherwise falls back to SQLite
@@ -25,17 +34,22 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 server.config["SQLALCHEMY_DATABASE_URI"] = (
     os.environ.get("DATABASE_URL")
     or f"sqlite:///{os.path.join(BASE_DIR, 'instance', 'portfolio.db')}"
-
 )
 
+# It disables SQLAlchemy’s event-based object change tracking, which it is not used it now.
 server.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 print("USING DB:", server.config["SQLALCHEMY_DATABASE_URI"])
-
 
 # Initialise database with Flask app
 db.init_app(server)
 
+# Had issues with blog table not existing when updating blog as it is dropped. Only creates missing ones
+with server.app_context():
+    db.create_all()
 
+
+# Reads SMTP config from environment.
+# Constructs an email and sends it securely.
 def send_email(subject, body, reply_to=None):
     """
     Sends an email using SMTP settings from environment variables
@@ -47,6 +61,10 @@ def send_email(subject, body, reply_to=None):
     mail_to = os.environ.get("MAIL_TO", smtp_user)
     mail_from = os.environ.get("MAIL_FROM", smtp_user)
 
+    # Fail early with a clear error if config is missing
+    if not all([smtp_host, smtp_port, smtp_user, smtp_pass]):
+        raise RuntimeError("SMTP environment variables are not fully configured")
+
     msg = EmailMessage()
     msg["Subject"] = subject
     msg["From"] = mail_from
@@ -57,8 +75,15 @@ def send_email(subject, body, reply_to=None):
 
     msg.set_content(body)
 
-    with smtplib.SMTP(smtp_host, smtp_port) as server_conn:
-        server_conn.starttls()
+    # SAFE SMTP FLOW (prevents 'please run connect() first')
+    with smtplib.SMTP(smtp_host, smtp_port, timeout=10) as server_conn:
+        server_conn.ehlo()
+
+        # STARTTLS is only valid on TLS ports (usually 587)
+        if smtp_port == 587:
+            server_conn.starttls()  # Upgrades the connection to encrypted TLS
+            server_conn.ehlo()
+
         server_conn.login(smtp_user, smtp_pass)
         server_conn.send_message(msg)
 
@@ -92,10 +117,6 @@ def common_context():
 
 @server.route("/", methods=["GET", "POST"])
 def index():
-    """
-    Homepage route
-    Handles contact form submission
-    """
     ctx = common_context()
     form = ContactForm()
 
@@ -116,16 +137,20 @@ Message:
 """
 
             send_email(
-                "Portfolio contact form",
-                body,
+                subject="Portfolio contact form",
+                body=body,
                 reply_to=form.email.data
             )
 
-            contact_success = "Thanks! Your message has been sent."
-            form = ContactForm(formdata=None)
+            # Redirect after successful POST (PRG pattern)
+            flash("Thanks! Your message has been sent. I will get back to you", "success")
+            return redirect(url_for("index", _anchor="contact-form"))
 
         except Exception:
-            contact_error = "Sorry, your message could not be sent right now."
+            server.logger.exception("Contact form email failed")
+            flash("Sorry, your message could not be sent right now.", "error")
+            return redirect(url_for("index", _anchor="contact-form"))
+
 
     return render_template(
         "index.html",
@@ -136,12 +161,9 @@ Message:
     )
 
 
+
 @server.route("/tutoring", methods=["GET", "POST"])
 def tutoring():
-    """
-    Tutoring booking page
-    Saves bookings and sends notification emails
-    """
     ctx = common_context()
     form = BookingForm()
 
@@ -174,17 +196,22 @@ Message:
 """
 
             send_email(
-                "Tutoring booking request",
-                body,
+                subject="Tutoring booking request",
+                body=body,
                 reply_to=booking.email
             )
 
-            booking_success = "Thanks! Your booking request has been sent."
-            form = BookingForm(formdata=None)
+            # Redirect to the form after submission so user can see message instead of scrolling it up.
+            flash("Thanks! Your booking request has been sent.", "success")
+            return redirect(url_for("tutoring", _anchor="booking-form"))
+
 
         except Exception:
             db.session.rollback()
-            booking_error = "Sorry, your booking could not be processed."
+            server.logger.exception("Tutoring booking failed")
+            flash("Sorry, your booking could not be processed.", "error")
+            return redirect(url_for("tutoring", _anchor="booking-form"))
+
 
     return render_template(
         "tutoring.html",

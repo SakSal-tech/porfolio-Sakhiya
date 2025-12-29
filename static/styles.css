@@ -1,5 +1,7 @@
 /*
-   ROOT VARIABLES
+   ROOT VARIABLES. One place to change colours. Enables themes (light / dark / contrast)
+
+Prevents inconsistency
  */
 :root {
   --background-color: #F2F3F5;
@@ -19,7 +21,7 @@
 }
 
 /*
-   GLOBAL RESET
+   GLOBAL RESET: box-sizing, padding + border are included in width
  */
 * {
   margin: 0;
@@ -164,7 +166,9 @@ section {
   box-shadow: 0 4px 0 #1d3c78;
   transition: 0.2s ease;
 }
-
+/*
+   Hover lifts. click presses down. No JS needed.
+ */
 .nav-btn:hover { transform: translateY(-1px); }
 .nav-btn:active { transform: translateY(3px); }
 

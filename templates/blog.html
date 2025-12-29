@@ -1,6 +1,8 @@
+{#This template is a child of base.html.#}
 {% extends "base.html" %}
 {% set title = "Blogs" %}
 
+{#Start content injection. Everything below belongs inside the content block defined in base.html#}
 {% block content %}
 
 <section class="projects-section">
@@ -14,9 +16,15 @@
     #}
     {% for blog in blogs %}
 
+{#
+  Blogs are intentionally static.
+  Sliding animations were removed via CSS.
+#}
       <article
+
         class="blog-card
                blog-theme-{{ blog.card_position }}
+
                {% if blog.card_position is odd %}
                  slide-from-left
                {% else %}
@@ -24,28 +32,34 @@
                {% endif %}"
       >
 
-        {# Blog title #}
-        <h3>{{ blog.title }}</h3>
+{# Blog title #}
+<h3>{{ blog.title }}</h3>
 
-        {# Metadata line under the title. This prevents:Empty paragraphs, Broken layout, Errors if a field is blank #}
-        {% if blog.meta %}
-          <p class="blog-meta">{{ blog.meta }}</p>
-        {% endif %}
+{# Metadata line under the title. This prevents: Empty paragraphs, Broken layout, Errors if a field is blank #}
+{% if blog.meta %}
+  <p class="blog-meta">{{ blog.meta }}</p>
+{% endif %}
 
-        {# Short summary shown on the card #}
-        {% if blog.summary %}
-          <p>{{ blog.summary }}</p>
-        {% endif %}
+{# Reading time shown under metadata if available #}
+{% if blog.read_time %}
+  <p class="blog-meta">{{ blog.read_time }}</p>
+{% endif %}
 
-        {# Expandable full article content #}
-        <details>
-          <summary>Read full article</summary>
-<p>
-  {{ blog.content
-     | replace('\n\n', '</p><p>')
-     | safe }}
-</p>
-        </details>
+{# Short summary shown on the card #}
+{% if blog.summary %}
+  <p>{{ blog.summary }}</p>
+{% endif %}
+
+{# Expandable full article content #}
+<details>
+  <summary>Read full article</summary>
+  <p>
+    {{ blog.content
+       | replace('\n\n', '</p><p>')
+       | safe }}
+  </p>
+</details>
+
 
       </article>
 
