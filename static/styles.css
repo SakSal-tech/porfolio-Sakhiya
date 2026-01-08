@@ -403,7 +403,8 @@ section {
 }
 
 /*
-   BLOG
+   BLOG. Issues with web links overflowing outside the cards overflow: content too wide
+wrap: break it onto the next line
  */
 .blog-card {
   background: white;
@@ -411,7 +412,10 @@ section {
   padding: 20px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   transition: 0.3s ease;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
+
 
 .blog-card:hover {
   transform: translateY(-4px);
