@@ -6,10 +6,14 @@ load_dotenv()
 
 import smtplib
 from email.message import EmailMessage
-from datetime import datetime
+from datetime import date, datetime
 from flask import Flask, render_template
 from flask import flash, redirect, url_for
 
+from flask import Response
+
+#Sitemap
+from flask import send_from_directory
 
 # Forms
 from forms import ContactForm, BookingForm
@@ -20,20 +24,57 @@ from models import db, Booking, Blog
 # Flask application
 server = Flask(__name__)
 
-
 # Secret key for forms and sessions
 server.config["SECRET_KEY"] = os.environ.get(
     "SECRET_KEY", "dev-secret-key-change-me"
 )
 
 
+@server.route("/sitemap.xml")
+def sitemap():
+    pages = [
+        {
+            "loc": "https://www.sakhiya.dev/",
+            "lastmod": date.today().isoformat(),
+            "priority": "1.0",
+        },
+        {
+            "loc": "https://www.sakhiya.dev/tutoring",
+            "lastmod": date.today().isoformat(),
+            "priority": "0.8",
+        },
+    ]
+
+    # Blog page last modified = most recent blog update
+    blogs = Blog.get_published()
+    # Google to know when blog content changed
+    if blogs:
+        latest_blog_update = max(blog.updated_at for blog in blogs)
+        blog_lastmod = latest_blog_update.date().isoformat()
+    else:
+        blog_lastmod = date.today().isoformat()
+
+    pages.append({
+        "loc": "https://www.sakhiya.dev/blog",
+        "lastmod": blog_lastmod,
+        "priority": "0.8",
+    })
+
+    xml = render_template("sitemap.xml", pages=pages)
+    return Response(xml, mimetype="application/xml")
+
+
+@server.route("/robots.txt")
+def robots():
+    return send_from_directory("static", "robots.txt")
+
 
 # Database configuration
 # Uses DATABASE_URL if explicitly set, otherwise falls back to SQLite
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 server.config["SQLALCHEMY_DATABASE_URI"] = (
-    os.environ.get("DATABASE_URL")
-    or f"sqlite:///{os.path.join(BASE_DIR, 'instance', 'portfolio.db')}"
+        os.environ.get("DATABASE_URL")
+        or f"sqlite:///{os.path.join(BASE_DIR, 'instance', 'portfolio.db')}"
 )
 
 # It disables SQLAlchemy’s event-based object change tracking, which it is not used it now.
@@ -151,7 +192,6 @@ Message:
             flash("Sorry, your message could not be sent right now.", "error")
             return redirect(url_for("index", _anchor="contact-form"))
 
-
     return render_template(
         "index.html",
         contact_form=form,
@@ -159,7 +199,6 @@ Message:
         contact_error=contact_error,
         **ctx
     )
-
 
 
 @server.route("/tutoring", methods=["GET", "POST"])
@@ -211,7 +250,6 @@ Message:
             server.logger.exception("Tutoring booking failed")
             flash("Sorry, your booking could not be processed.", "error")
             return redirect(url_for("tutoring", _anchor="booking-form"))
-
 
     return render_template(
         "tutoring.html",
