@@ -85,7 +85,7 @@ def main():
             title="Engineering With AI Is Still Engineering",
             meta="Software Engineering • Artificial Intelligence • 2026",
             summary="AI tools are changing how software is built, but engineering judgment and responsibility still matter.",
-            content="""AI tools are now part of my daily development workflow. From generating boilerplate to explaining unfamiliar code, they reduce friction and speed up iteration.
+content="""AI tools are increasingly present in modern development workflows. Used thoughtfully, they can support tasks such as exploring unfamiliar concepts, reducing repetitive setup, and accelerating iteration without replacing engineering judgment.
 
 Used well, AI acts as a productivity multiplier. Used poorly, it can hide weak thinking behind confident output. This makes human judgment more important, not less.
 
@@ -112,7 +112,7 @@ AI changes how we build software, not why we build it. Engineers still own the d
             title="Reading Code Is the Most Underrated Engineering Skill",
             meta="Engineering Culture • Career Growth",
             summary="Understanding existing systems matters more than writing new code in modern software teams.",
-            content="""Early in my career, progress felt tied to how much code I could write. Over time, I learned that most real engineering work happens inside existing systems.
+            content="""When I first started coding, progress felt tied to how much code I could write. Over time, I realised that most real engineering work happens inside existing systems.
 
 Modern engineering teams spend far more time maintaining and evolving code than creating it from scratch. Companies operating at scale consistently emphasise system understanding and long-term maintainability.
 
@@ -133,12 +133,12 @@ AI can generate code instantly, but it cannot explain intent or context. Enginee
         )
 
         upsert_blog(
-            slug="why-shipping-beats-perfect-side-projects",
+            slug="why-shipping-beats-perfect-Independent-projects",
             card_position=3,
-            title="Why Shipping Beats Perfect Side Projects",
+            title="Why Shipping Beats Perfect Local Projects",
             meta="Career Growth • Software Engineering",
-            summary="Shipping small, imperfect projects teaches more than endlessly refining ideas that never leave your laptop.",
-            content="""I have started more side projects than I have shipped. Each one taught me something, but the biggest lessons came from the projects that actually went live.
+            summary="Sharing small, imperfect projects teaches more than endlessly refining ideas that never leave your laptop.",
+content="""Building a portfolio involves starting many projects. The ones I completed, took through documentation, sought feedback and review are where I learned the most.
 
 Modern product teams emphasise learning through iteration. Releasing work early exposes real constraints around usability, performance, and maintainability.
 The hardest lessons appear after release, when users interact with your work in unexpected ways. This is where engineering decisions meet reality.
@@ -153,7 +153,7 @@ https://martinfowler.com/articles/continuousIntegration.html
 </a>
 
 
-Shipping builds confidence, accountability, and momentum. Perfect ideas rarely teach as much as imperfect releases. What could you ship this month if you stopped waiting?
+Sharing builds confidence, accountability, and momentum. Perfect ideas rarely teach as much as imperfect releases. What could you ship this month if you stopped waiting?
 """
         )
 
@@ -163,7 +163,7 @@ Shipping builds confidence, accountability, and momentum. Perfect ideas rarely t
             title="Why I Write Documentation Even When No One Is Watching",
             meta="Engineering Practice • Communication • Growth",
             summary="Writing documentation for small projects builds habits that scale to real-world software teams.",
-            content="""Most of my side projects will never have real users. Some will never leave my local machine. I still write documentation for all of them.
+            content="""Most of my  projects may never have real users. Some may never leave my local machine or Github. I still write documentation for all of them.
 
 Modern engineering organisations increasingly treat documentation as part of the product. Clear written context improves onboarding, collaboration, and long-term maintainability.
 
@@ -175,10 +175,10 @@ Read more here:
 <a href="https://medium.com/swinginc/documentation-what-is-still-missing-in-your-project-docs-frontend-developers-perspective-24fbe578a90a"
    target="_blank" rel="noopener">
 https://medium.com/swinginc/documentation-what-is-still-missing-in-your-project-docs-frontend-developers-perspective-24fbe578a90a
-</a> 
+</a>
 
 
-Side projects are training grounds. Writing documentation builds habits that transfer directly to professional teams. How would your last project feel if someone else had to maintain it tomorrow?
+Portfolio projects are training grounds. Writing documentation builds habits that transfer directly to professional teams. How would your last project feel if someone else had to maintain it tomorrow?
 """
         )
 
