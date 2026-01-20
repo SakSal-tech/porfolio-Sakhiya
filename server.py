@@ -8,18 +8,20 @@ import smtplib
 from email.message import EmailMessage
 from datetime import date, datetime
 from flask import Flask, render_template
-from flask import flash, redirect, url_for
-
 from flask import Response
 
 #Sitemap
 from flask import send_from_directory
 
 # Forms
-from forms import ContactForm, BookingForm
+from forms import ContactForm, BookingForm, ReviewForm
 
 # Database models
-from models import db, Booking, Blog
+from models import db, Booking, Blog, Review
+
+from sqlalchemy.exc import SQLAlchemyError
+from flask import flash, redirect, url_for
+
 
 # Flask application
 server = Flask(__name__)
@@ -187,7 +189,7 @@ Message:
             flash("Thanks! Your message has been sent. I will get back to you", "success")
             return redirect(url_for("index", _anchor="contact-form"))
 
-        except Exception:
+        except SQLAlchemyError:
             server.logger.exception("Contact form email failed")
             flash("Sorry, your message could not be sent right now.", "error")
             return redirect(url_for("index", _anchor="contact-form"))
@@ -204,25 +206,90 @@ Message:
 @server.route("/tutoring", methods=["GET", "POST"])
 def tutoring():
     ctx = common_context()
-    form = BookingForm()
 
-    booking_success = None
-    booking_error = None
+    # Prefixes are added so field names are unique in the HTML.
+    # This prevents conflicts because multiple forms on the page
+    # previously shared the same field name "message".
+    booking_form = BookingForm(prefix="booking")
+    review_form = ReviewForm(prefix="review")
 
-    if form.validate_on_submit():
+    # Review form handling.
+    # submit.data is checked so this block only runs when
+    # the review form was the one submitted.
+    if review_form.validate_on_submit() and review_form.submit.data:
+        try:
+            # The role is only stored for colleagues.
+            role = (
+                review_form.role.data
+                if review_form.reviewer_type.data == "colleague"
+                else None
+            )
+
+            review = Review(
+                name=review_form.name.data,
+                role=role,
+                message=review_form.message.data
+            )
+
+            db.session.add(review)
+            db.session.commit()
+
+        except SQLAlchemyError:
+            # Database errors are handled explicitly to keep
+            # the transaction state consistent.
+            db.session.rollback()
+            server.logger.exception("Review submission failed")
+            flash("Sorry, your review could not be submitted.", "error")
+            return redirect(url_for("tutoring", _anchor="reviews"))
+
+        # Email sending is separated from database logic.
+        # A failure here does not invalidate the saved review.
+        try:
+            email_body = f"""New review submitted (awaiting approval)
+
+Name: {review_form.name.data}
+Reviewer type: {review_form.reviewer_type.data}
+Role: {role or "N/A"}
+
+Message:
+{review_form.message.data}
+"""
+            send_email(
+                subject="New review awaiting approval",
+                body=email_body
+            )
+        except Exception:
+            server.logger.exception("Review saved but email notification failed")
+
+        flash(
+            "Thank you for your review. It may take a little while to appear on the site.",
+            "success"
+        )
+        return redirect(url_for("tutoring", _anchor="reviews"))
+
+    # Booking form handling.
+    # This runs only when the booking form is submitted.
+    if booking_form.validate_on_submit():
         try:
             booking = Booking(
-                name=form.name.data,
-                level=form.level.data,
-                exam_board=form.exam_board.data,
-                email=form.email.data,
-                preferred_times=form.preferred_times.data,
-                message=form.message.data,
+                name=booking_form.name.data,
+                level=booking_form.level.data,
+                exam_board=booking_form.exam_board.data,
+                email=booking_form.email.data,
+                preferred_times=booking_form.preferred_times.data,
+                message=booking_form.message.data
             )
 
             db.session.add(booking)
             db.session.commit()
 
+        except SQLAlchemyError:
+            db.session.rollback()
+            server.logger.exception("Tutoring booking failed")
+            flash("Sorry, your booking could not be processed.", "error")
+            return redirect(url_for("tutoring", _anchor="booking-form"))
+
+        try:
             body = f"""New tutoring booking request
 
 Name: {booking.name}
@@ -233,29 +300,28 @@ Preferred times: {booking.preferred_times}
 Message:
 {booking.message}
 """
-
             send_email(
                 subject="Tutoring booking request",
                 body=body,
                 reply_to=booking.email
             )
-
-            # Redirect to the form after submission so user can see message instead of scrolling it up.
-            flash("Thanks! Your booking request has been sent.", "success")
-            return redirect(url_for("tutoring", _anchor="booking-form"))
-
-
         except Exception:
-            db.session.rollback()
-            server.logger.exception("Tutoring booking failed")
-            flash("Sorry, your booking could not be processed.", "error")
+            server.logger.exception("Booking saved but email failed")
+            flash("Your booking was saved, but the email could not be sent.", "error")
             return redirect(url_for("tutoring", _anchor="booking-form"))
+
+        flash("Thanks! Your booking request has been sent.", "success")
+        return redirect(url_for("tutoring", _anchor="booking-form"))
+
+    # Page load for GET requests.
+    # Only approved reviews are displayed publicly.
+    reviews = Review.get_approved()
 
     return render_template(
         "tutoring.html",
-        booking_form=form,
-        booking_success=booking_success,
-        booking_error=booking_error,
+        booking_form=booking_form,
+        review_form=review_form,
+        reviews=reviews,
         **ctx
     )
 

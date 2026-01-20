@@ -49,51 +49,96 @@
 <section class="projects-section" id="tutoring-carousel">
   <h2>GCSE & A-Level support</h2>
 
-  <div id="supportCarousel" class="carousel slide carousel-reverse" data-bs-ride="carousel" data-bs-interval="3500">
+  <div id="supportCarousel"
+       class="carousel slide carousel-reverse"
+       data-bs-ride="carousel"
+       data-bs-interval="3500">
+
     <div class="carousel-indicators">
       <button type="button" data-bs-target="#supportCarousel" data-bs-slide-to="0" class="active" aria-label="Slide 1"></button>
       <button type="button" data-bs-target="#supportCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
       <button type="button" data-bs-target="#supportCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
       <button type="button" data-bs-target="#supportCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
+      <button type="button" data-bs-target="#supportCarousel" data-bs-slide-to="4" aria-label="Slide 5"></button>
     </div>
 
     <div class="carousel-inner">
+
+      <!-- BENEFITS SLIDE -->
       <div class="carousel-item active">
+        <div class="carousel-benefits-slide">
+
+          <div class="benefit-card">
+            <i class="fas fa-graduation-cap" aria-hidden="true"></i>
+            <div>
+              <h3>Exam-focused</h3>
+              <p>Learn how to apply knowledge under exam conditions</p>
+            </div>
+          </div>
+
+          <div class="benefit-card">
+            <i class="fas fa-laptop-code" aria-hidden="true"></i>
+            <div>
+              <h3>Hands-on coding</h3>
+              <p>Confidence with programming and problem-solving</p>
+            </div>
+          </div>
+
+          <div class="benefit-card">
+            <i class="fas fa-star" aria-hidden="true"></i>
+            <div>
+              <h3>Outstanding grades</h3>
+              <p>Clear targets and measurable progress</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- EXISTING SLIDES -->
+      <div class="carousel-item">
         <div class="carousel-card">
           <h3>GCSE Theory + Exam Technique</h3>
           <p>Coverage aligned to specification, with exam paper practice and model answers.</p>
         </div>
       </div>
+
       <div class="carousel-item">
         <div class="carousel-card">
           <h3>Programming Confidence</h3>
           <p>Structured tasks to build confidence: write, test, debug, refactor, and explain solutions.</p>
         </div>
       </div>
+
       <div class="carousel-item">
         <div class="carousel-card">
           <h3>A-Level Theory Mastery</h3>
           <p>Deep understanding of core topics with application-focused exam practice.</p>
         </div>
       </div>
+
       <div class="carousel-item">
         <div class="carousel-card">
           <h3>A-Level Programming Project</h3>
           <p>Support with planning, algorithm design, coding, testing, documentation and marking criteria.</p>
         </div>
       </div>
+
     </div>
 
     <button class="carousel-control-prev" type="button" data-bs-target="#supportCarousel" data-bs-slide="prev">
       <span class="carousel-control-prev-icon" aria-hidden="true"></span>
       <span class="visually-hidden">Previous</span>
     </button>
+
     <button class="carousel-control-next" type="button" data-bs-target="#supportCarousel" data-bs-slide="next">
       <span class="carousel-control-next-icon" aria-hidden="true"></span>
       <span class="visually-hidden">Next</span>
     </button>
+
   </div>
 </section>
+
 
 <section class="projects-section" id="gallery">
   <h2> Online or Face-to-Face </h2>
@@ -114,91 +159,188 @@
   </div>
 </section>
 
+<section class="contact-section review-section" id="reviews">
+  <div class="contact-grid">
+
+    <!-- LEFT SIDE -->
+    <div class="contact-left">
+      <h2>What parents, students & colleagues say</h2>
+      <p>
+        If your child benefited from tutoring, I’d really appreciate you sharing your experience.
+
+        Many families come back after exam results to tell me how confidence, grades,
+        and motivation changed — those stories help others make informed decisions.
+      </p>
+
+      <p>
+        Colleagues, former teachers, and schools who have seen my teaching practice
+        and results over the years are also very welcome to leave a review.
+      </p>
+
+      <!-- REVIEW CAROUSEL -->
+      {% if reviews %}
+      <div id="reviewCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+
+          {% for review in reviews %}
+          <div class="carousel-item {% if loop.first %}active{% endif %}">
+            <div class="review-card">
+              <p class="review-message">“{{ review.message }}”</p>
+              <span class="review-author">
+                {{ review.name }}
+                {% if review.role %}
+                  — {{ review.role }}
+                {% endif %}
+              </span>
+            </div>
+          </div>
+          {% endfor %}
+
+        </div>
+
+        <button class="carousel-control-prev" type="button"
+                data-bs-target="#reviewCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon"></span>
+        </button>
+
+        <button class="carousel-control-next" type="button"
+                data-bs-target="#reviewCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon"></span>
+        </button>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="contact-right">
+      <h2>Leave a review</h2>
+
+      <form method="POST" action="{{ url_for('tutoring') }}" class="review-form">
+        {{ review_form.hidden_tag() }}
+
+        <div class="form-group">
+          {{ review_form.name.label }}
+          {{ review_form.name }}
+        </div>
+
+        <div class="form-group">
+          {{ review_form.reviewer_type.label }}
+          {{ review_form.reviewer_type }}
+        </div>
+
+        <div class="form-group">
+          {{ review_form.role.label }}
+          {{ review_form.role }}
+        </div>
+
+        <div class="form-group">
+          {{ review_form.message.label }}
+          {{ review_form.message }}
+        </div>
+
+        <button type="submit">Submit review</button>
+      </form>
+    </div>
+
+  </div>
+</section>
+
+
 <section class="contact-section" id="book">
   <div class="contact-grid">
+
+    <!-- LEFT SIDE: INTRO TEXT -->
     <div class="contact-left">
       <h2>Book a tutoring session</h2>
       <p>
-        Tell me the exam level, topics you need support with, and your preferred method online/tutor home and days/times. I’ll reply with available slots.</p>
+        Tell me the exam level, topics you need support with, and your preferred
+        method (online or tutor home) and days/times. I’ll reply with available slots.
+      </p>
+  <h2>   Fees</h2>
+      <h3> Group lessons </h3>
+      <p> £25 (GCSE) and £35 (A Level) </p>
+      <h3>One-To-One</h3>
+      <p> 1:1 lessons: £30 (GCSE) and £40 (A Level) </p>
+<p>
+Lessons can be one-to-one or in small groups of up to four students, depending on your preference and availability.
+      </p>
+    </div>
 
+    <!-- RIGHT SIDE: BOOKING FORM -->
+<div class="contact-right">
+  <h2>Booking request</h2>
 
-      <div class="value-cards">
-        <div class="value-card">
-          <i class="fas fa-graduation-cap"></i>
-          <div>
-            <h4>Exam-focused</h4>
-            <p>Learn how to apply knowledge under exam conditions</p>
-          </div>
-        </div>
+  <form method="POST" action="{{ url_for('tutoring') }}" novalidate>
+    {{ booking_form.hidden_tag() }}
 
-        <div class="value-card">
-          <i class="fas fa-laptop-code"></i>
-          <div>
-            <h4>Hands-on coding</h4>
-            <p>Confidence with programming and problem-solving</p>
-          </div>
-        </div>
+    <!-- ROW 1 -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="student_name">Student / Parent name</label>
+        {{ booking_form.name(id="student_name") }}
+        {% for err in booking_form.name.errors %}
+          <div class="form-error" role="alert">{{ err }}</div>
+        {% endfor %}
+      </div>
 
-        <div class="value-card">
-          <i class="fas fa-star"></i>
-          <div>
-            <h4>Outstanding grades</h4>
-            <p>Clear targets and measurable progress</p>
-          </div>
-        </div>
+      <div class="form-group">
+        <label for="level">Level</label>
+        {{ booking_form.level(id="level") }}
+        {% for err in booking_form.level.errors %}
+          <div class="form-error" role="alert">{{ err }}</div>
+        {% endfor %}
       </div>
     </div>
 
-    <div class="contact-right">
-      <h2>Booking request</h2>
-<form method="POST" action="{{ url_for('tutoring') }}" novalidate>
-  {{ booking_form.hidden_tag() }}
+    <!-- ROW 2 -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="exam_board">Exam board</label>
+        {{ booking_form.exam_board(id="exam_board") }}
+      </div>
 
-  <label for="student_name">Student / Parent name</label>
-  {{ booking_form.name(id="student_name") }}
-  {% for err in booking_form.name.errors %}
-    <div class="form-error" role="alert">{{ err }}</div>
-  {% endfor %}
-
-  <label for="level">Level</label>
-  {{ booking_form.level(id="level") }}
-  {% for err in booking_form.level.errors %}
-    <div class="form-error" role="alert">{{ err }}</div>
-  {% endfor %}
-
-  <label for="exam_board">Exam board</label>
-  {{ booking_form.exam_board(id="exam_board") }}
-
-  <label for="email2">Email</label>
-  {{ booking_form.email(id="email2") }}
-  {% for err in booking_form.email.errors %}
-    <div class="form-error" role="alert">{{ err }}</div>
-  {% endfor %}
-
-  <label for="preferred">Preferred days/times</label>
-  {{ booking_form.preferred_times(id="preferred") }}
-
-  <label for="topics">Topics / message</label>
-  {{ booking_form.message(id="topics") }}
-  {% for err in booking_form.message.errors %}
-    <div class="form-error" role="alert">{{ err }}</div>
-  {% endfor %}
-
-  <div id="booking-form">
-    <button type="submit">Send booking request</button>
-
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% for category, message in messages %}
-    <p class="form-{{ category }}" role="status">{{ message }}</p>
-  {% endfor %}
-{% endwith %}
-
-  </div>
-</form>
-
+      <div class="form-group">
+        <label for="email2">Email</label>
+        {{ booking_form.email(id="email2") }}
+        {% for err in booking_form.email.errors %}
+          <div class="form-error" role="alert">{{ err }}</div>
+        {% endfor %}
+      </div>
     </div>
+
+
+
+    <!-- ROW 3: FULL WIDTH -->
+<div class="form-row">
+  <div class="form-group" style="grid-column: 1 / -1;">
+    <label for="preferred">Preferred days/times</label>
+    {{ booking_form.preferred_times(id="preferred") }}
+  </div>
+</div>
+
+    <!-- ROW 4: FULL WIDTH TEXTAREA -->
+    <div class="form-row">
+      <div class="form-group" style="grid-column: 1 / -1;">
+        <label for="topics">Topics / message</label>
+        {{ booking_form.message(id="topics") }}
+        {% for err in booking_form.message.errors %}
+          <div class="form-error" role="alert">{{ err }}</div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- SUBMIT -->
+    <div id="booking-form">
+      <button type="submit">Send booking request</button>
+    </div>
+
+  </form>
+</div>
+
+
   </div>
 </section>
+
 
 <section class="skills-section" id="experience">
   <h2>School Leadership & Teaching Experience</h2>

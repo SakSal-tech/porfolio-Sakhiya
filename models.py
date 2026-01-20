@@ -154,3 +154,37 @@ class Blog(db.Model):
             .order_by(cls.card_position)
             .all()
         )
+
+
+class Review(db.Model):
+    __tablename__ = "reviews"
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    name = db.Column(db.String(80), nullable=False)
+    role = db.Column(db.String(120))  # Optional (for colleagues/professionals)
+    message = db.Column(db.Text, nullable=False)
+
+    approved = db.Column(db.Boolean, default=False, nullable=False)
+
+    created_at = db.Column(
+        db.DateTime,
+        nullable=False,
+        default=datetime.utcnow
+    )
+
+    def __repr__(self):
+        return f"<Review id={self.id} approved={self.approved}>"
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @classmethod
+    def get_approved(cls):
+        return (
+            cls.query
+            .filter_by(approved=True)
+            .order_by(cls.created_at.desc())
+            .all()
+        )
